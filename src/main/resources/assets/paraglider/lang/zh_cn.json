@@ -1,12 +1,16 @@
 {
     "text.config.paraglider.option.durability":"耐久",
     "text.config.paraglider.option.durability.tooltip":"滑翔伞的耐久值，为 0 时不会损坏",
+    "text.config.paraglider.option.paraglidingSpeed":"滑翔速度",
+    "text.config.paraglider.option.paraglidingSpeed.tooltip":"默认为 0.026，与冲刺速度等同",
 
     "text.config.paraglider.section.updraft": "上升气流",
     "text.config.paraglider.option.updraftEnable":"启用上升气流",
     "text.config.paraglider.option.updraftHeight":"上升气流有效高度",
 
     "text.config.paraglider.section.stamina": "精力",
+    "text.config.paraglider.option.staminaEnable":"启用精力",
+    "text.config.paraglider.option.maxStamina":"最大精力",
     "text.config.paraglider.option.paraglidingStamina":"滑翔精力",
     "text.config.paraglider.option.flyingStamina":"飞行精力",
     "text.config.paraglider.option.vehicleStamina":"奔跑精力",
@@ -14,5 +18,8 @@
     "text.config.paraglider.option.underwaterStamina":"水下精力",
     "text.config.paraglider.option.breathableUnderwaterStamina":"水下可活动精力",
     "text.config.paraglider.option.spiritingStamina":"奔跑消耗",
-    "text.config.paraglider.option.groundStamina":"地表精力"
+    "text.config.paraglider.option.groundStamina":"地表精力",
+
+    "item.paraglider.paraglider": "滑翔伞",
+    "item.paraglider.deku_leaf_paraglider": "德库叶子"
 }

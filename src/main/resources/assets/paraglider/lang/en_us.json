@@ -7,6 +7,8 @@
 	"text.config.paraglider.option.updraftHeight":"Height of updraft",
 
 	"text.config.paraglider.section.stamina": "Stamina",
+	"text.config.paraglider.option.staminaEnable":"Enable stamina",
+	"text.config.paraglider.option.maxStamina":"Max stamina",
 	"text.config.paraglider.option.paraglidingStamina":"Paragliding stamina",
 	"text.config.paraglider.option.flyingStamina":"Flying stamina",
 	"text.config.paraglider.option.vehicleStamina":"Vehicle stamina",
@@ -14,5 +16,8 @@
 	"text.config.paraglider.option.underwaterStamina":"Underwater stamina",
 	"text.config.paraglider.option.breathableUnderwaterStamina":"Breathable underwater stamina",
 	"text.config.paraglider.option.spiritingStamina":"Spiriting stamina",
-	"text.config.paraglider.option.groundStamina":"Ground stamina"
+	"text.config.paraglider.option.groundStamina":"Ground stamina",
+
+	"item.paraglider.paraglider": "Paraglider",
+	"item.paraglider.deku_leaf_paraglider": "Deku leaf"
 }
