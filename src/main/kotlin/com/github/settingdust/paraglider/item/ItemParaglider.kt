@@ -6,6 +6,7 @@ import net.minecraft.item.DyeableItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtElement
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -28,9 +29,9 @@ class ItemParaglider(private val defaultColor: Int) :
         ingredient.isIn(Paraglider.Tags.LEATHER)
 
     override fun getColor(stack: ItemStack) =
-        stack.getSubNbt("display")
-            ?.takeIf { it.contains("color", 99 /* NbtElement.NUMBER_TYPE */) }
-            ?.getInt("color") ?: defaultColor
+        stack.getSubNbt(DyeableItem.DISPLAY_KEY)
+            ?.takeIf { it.contains(DyeableItem.COLOR_KEY, NbtElement.NUMBER_TYPE.toInt()) }
+            ?.getInt(DyeableItem.COLOR_KEY) ?: defaultColor
 
     override fun appendTooltip(
         stack: ItemStack,

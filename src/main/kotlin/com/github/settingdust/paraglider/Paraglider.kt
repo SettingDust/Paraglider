@@ -7,6 +7,7 @@ import com.github.settingdust.paraglider.component.UpdraftComponent
 import com.github.settingdust.paraglider.item.ItemParaglider
 import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.ClampedEntityAttribute
@@ -15,6 +16,7 @@ import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffectType
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.DyeableItem
 import net.minecraft.tag.TagKey
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -35,13 +37,15 @@ object Paraglider {
 
     @Deprecated(message = "Mod entrypoint", level = DeprecationLevel.ERROR)
     internal fun clientInit() {
-        registerPredicates()
-    }
-
-    private fun registerPredicates() {
         ModelPredicateProviderRegistry.register(identifier("paragliding")) { item, _, _, _ ->
             if (item.paragliding) 1F else 0F
         }
+
+        ColorProviderRegistry.ITEM.register(
+            { stack, i -> if (i < 0) -1 else (stack.item as DyeableItem).getColor(stack) },
+            Items.PARAGLIDER,
+            Items.DEKU_LEAF_PARAGLIDER
+        )
     }
 
     internal object Identifiers {
