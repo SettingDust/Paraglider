@@ -9,14 +9,17 @@ import dev.onyxstudios.cca.api.v3.component.ComponentProvider
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.CommonTickingComponent
 import dev.onyxstudios.cca.api.v3.entity.PlayerComponent
+import net.fabricmc.fabric.api.event.player.UseItemCallback
 import net.minecraft.client.render.entity.model.PlayerEntityModel
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.TypedActionResult
 import net.minecraft.util.math.Direction
 import org.quiltmc.loader.api.minecraft.ClientOnly
 import org.quiltmc.qkl.library.nbt.set
+import kotlin.math.max
 import kotlin.math.min
 
 @ClientOnly
@@ -69,6 +72,14 @@ data class ParaglidingComponent(
     private var accumulatedFallDistance = 0.0
     private var yCache = 0.0
     var paragliding = false
+    private var exhaustedParagliding = 0
+
+    init {
+        UseItemCallback.EVENT.register { player, _, hand ->
+            if (player.paragliding) TypedActionResult.fail(player.getStackInHand(hand))
+            else TypedActionResult.pass(player.getStackInHand(hand))
+        }
+    }
 
     override fun readFromNbt(tag: NbtCompound) {
         paragliding = tag.getBoolean("paragliding")
@@ -85,26 +96,37 @@ data class ParaglidingComponent(
         val updraftHeight by lazy { Paraglider.config.updraftHeight() }
         val updraft by lazy { player.findUpdraft()?.let { (updraftHeight - it) / updraftHeight } }
         val ascending by lazy { updraft != null }
-        val heldParaglider by lazy { player.isHolding { it.item is ItemParaglider } } // TODO Tag
+        val heldParaglider by lazy {
+            player.isHolding { it.item is ItemParaglider }
+        } // TODO Tag
+        val onlyHeldParaglider by lazy {
+            heldParaglider && (player.mainHandStack.isEmpty || player.offHandStack.isEmpty)
+        }
         val exhausted by lazy { player.hasStatusEffect(Paraglider.StatusEffects.EXHAUSTED) }
+        if (exhausted && exhaustedParagliding <= 0) exhaustedParagliding = 20
+        if (exhaustedParagliding > 0) exhaustedParagliding--
+        val shouldNotParagliding = player.isOnGround ||
+            player.hasVehicle() ||
+            player.isSwimming ||
+            player.isTouchingWater ||
+            (player.isSprinting && !player.isUsingItem) ||
+            player.abilities.flying
 
         if (paragliding &&
             (
-                !heldParaglider ||
-                    exhausted ||
-                    player.isOnGround ||
-                    player.hasVehicle() ||
-                    player.isSwimming ||
-                    player.isTouchingWater ||
-                    (player.isSprinting && !player.isUsingItem)
+                !onlyHeldParaglider ||
+                    (exhausted && exhaustedParagliding <= 0) ||
+                    shouldNotParagliding
                 )
         ) {
+            exhaustedParagliding = 0
             paragliding = false
             dirty = true
         } else if (
             !paragliding &&
             !exhausted &&
-            heldParaglider &&
+            onlyHeldParaglider &&
+            !shouldNotParagliding &&
             (
                 (Paraglider.config.updraftEnable() && ascending) ||
                     (
@@ -119,11 +141,16 @@ data class ParaglidingComponent(
         }
 
         if (paragliding) {
-            player.fallDistance = 0F
             val velocity = player.velocity
+            player.flyingSpeed = Paraglider.config.paraglidingSpeed()
             if (ascending && Paraglider.config.updraftEnable() && (velocity.y < (0.4 * updraft!!))) {
+                player.fallDistance = 0F
                 player.velocity = velocity.withAxis(Direction.Axis.Y, 0.4 * updraft!!)
+            } else if (exhaustedParagliding > 0) {
+                player.fallDistance *= 0.6F
+                player.velocity = velocity.withAxis(Direction.Axis.Y, max(velocity.y - 0.02, -0.15))
             } else if (velocity.y < -0.05) {
+                player.fallDistance = 0F
                 player.velocity = velocity.withAxis(Direction.Axis.Y, min(velocity.y + 0.08, -0.05))
             }
         }
