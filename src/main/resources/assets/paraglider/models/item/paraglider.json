@@ -370,7 +370,7 @@
 	"overrides": [
 		{
 			"predicate": {
-				"paragliding": 1
+				"paraglider:paragliding": 1
 			},
 			"model": "paraglider:item/paraglider_on"
 		}

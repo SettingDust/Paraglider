@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:story/mine_stone",
+  "criteria": {
+    "paraglider": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "paraglider:paraglider"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.paraglider.paraglider.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "paraglider:paraglider"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.paraglider.paraglider"
+    }
+  },
+  "requirements": [
+    [
+      "paraglider"
+    ]
+  ]
+}

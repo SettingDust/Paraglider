@@ -1,0 +1,65 @@
+{
+    "schema_version": 1,
+    "quilt_loader": {
+        "group": "com.github.settingdust",
+        "id": "paraglider",
+        "version": "${version}",
+        "metadata": {
+            "name": "Paraglider",
+            "description": "BotW style Paraglider",
+            "contributors": {
+                "SettingDust": "Owner",
+                "Tictim": "Original owner"
+            },
+            "contact": {
+                "homepage": "https://github.com/SettingDust/Paraglider",
+                "issues": "https://github.com/SettingDust/Paraglider/issues",
+                "sources": "https://github.com/SettingDust/Paraglider"
+            }
+        },
+        "intermediate_mappings": "net.fabricmc:intermediary",
+        "entrypoints": {
+            "init": {
+                "adapter": "kotlin",
+                "value": "com.github.settingdust.paraglider.Paraglider::init"
+            },
+            "client_init": {
+                "adapter": "kotlin",
+                "value": "com.github.settingdust.paraglider.Paraglider::clientInit"
+            },
+            "cardinal-components": {
+                "adapter": "kotlin",
+                "value": "com.github.settingdust.paraglider.Components"
+            },
+            "pre_launch": {
+                "adapter": "kotlin",
+                "value": "com.github.settingdust.paraglider.Paraglider::preLaunch"
+            }
+        },
+        "depends": [
+            {
+                "id": "quilt_loader",
+                "versions": ">=0.17.6-"
+            },
+            {
+                "id": "quilted_fabric_api",
+                "versions": ">=4.0.0-"
+            },
+            {
+                "id": "minecraft",
+                "versions": ">=1.19.2"
+            },
+            {
+                "id": "qkl",
+                "versions": ">=1.0.1-"
+            }
+        ]
+    },
+    "cardinal-components": [
+        "paraglider:stamina",
+        "paraglider:paragliding",
+        "paraglider:updraft"
+    ],
+    "mixin": "paraglider.mixins.json",
+    "access_widener": "paraglider.accesswidener"
+}

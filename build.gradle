@@ -1,160 +1,131 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        mavenCentral()
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = 'https://maven.parchmentmc.org' }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.parchmentmc:librarian:1.+'
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-version = "${mod_version}"
-group = "tictim.${mod_id}"
-archivesBaseName = "${mod_name}-1.19.2"
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
-sourceSets {
-    main {
-        resources { srcDir 'src/generated/resources' }
-    }
-
-    datagen {
-        java { srcDir "src/datagen/java" }
-        resources { srcDir "src/datagen/resources" }
-
-        compileClasspath += configurations.getByName("minecraft")
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-    }
-
-    gametest {
-        java { srcDir "src/test/java" }
-        resources { srcDir "src/test/resources" }
-
-        compileClasspath += configurations.getByName("minecraft")
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-    }
+plugins {
+    id 'maven-publish'
+    id "java-library"
+    id "idea"
+    alias libs.plugins.quilt.loom
+    alias libs.plugins.kotlin.jvm
+    alias libs.plugins.kotlin.kapt
 }
 
-minecraft {
-    mappings channel: 'parchment', version: '2022.08.21-1.19.2'
-    // makeObfSourceJar = false
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            ideaModule "${project.name}.main"
-
-            mods {
-                paraglider {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            ideaModule "${project.name}.main"
-
-            mods {
-                paraglider {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'paraglider'
-
-            mods {
-                paraglider {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'paraglider', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                paraglider {
-                    source sourceSets.main
-                    source sourceSets.datagen
-                }
-            }
-        }
-    }
-}
-
-mixin {
-    add sourceSets.main, "paraglider.refmap.json"
-    showMessageTypes = true
-}
+archivesBaseName = project.archives_base_name
+version = "${project.version}+${libs.versions.minecraft.get()}"
+group = project.maven_group
 
 repositories {
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
+
+    maven { url = 'https://ladysnake.jfrog.io/artifactory/mods' }
+
+    maven { url 'https://maven.wispforest.io' }
+
+    maven { url 'https://jitpack.io' }
+    mavenCentral()
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accesswidener")
+//    splitEnvironmentSourceSets()
+    mods {
+        paraglider {
+            sourceSet sourceSets.main
+        }
     }
 }
 
+// All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"
+// See https://docs.gradle.org/current/userguide/platforms.html for information on how version catalogs work.
 dependencies {
-    minecraft "net.minecraftforge:forge:1.19.2-43.1.2"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft libs.minecraft
+    mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
 
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.287")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.287")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.287")
+    modImplementation libs.quilt.loader
+
+    // QSL is not a complete API; You will need Quilted Fabric API to fill in the gaps.
+    // Quilted Fabric API will automatically pull in the correct QSL version.
+    modImplementation libs.quilted.fabric.api
+    modImplementation libs.quilt.kotlin.libraries
+    // modImplementation libs.bundles.quilted.fabric.api // If you wish to use Fabric API's deprecated modules, you can replace the above line with this one
+
+    modImplementation libs.owo
+    kapt libs.owo
+    include libs.owo.sentinel
+
+    // Adds a dependency on the base cardinal components module (required by every other module)
+    // Replace modImplementation with modApi if you expose components in your own API
+    modImplementation libs.cardinal.components.base
+    // Adds a dependency on a specific module
+    modImplementation libs.cardinal.components.entity
+    modImplementation libs.cardinal.components.world
+
+    include libs.mixin.extras
+    implementation libs.mixin.extras
+    annotationProcessor libs.mixin.extras
 }
 
+processResources {
+    inputs.property 'version', version
+
+    filesMatching('quilt.mod.json') {
+        expand "version": version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+    it.options.release.set(17)
+}
+
+java {
+    // Still required by IDEs such as Eclipse and Visual Studio Code
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+
+    // If this mod is going to be a library, then it should also generate Javadocs in order to aid with development.
+    // Uncomment this line to generate them.
+    // withJavadocJar()
+}
+
+tasks.withType(KotlinCompile.class).configureEach {
+    kotlinOptions {
+        jvmTarget = 17
+    }
+}
 
 jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : project.name,
-                "Specification-Vendor"    : "Tictim",
-                "Specification-Version"   : "${version}",
-                "Implementation-Title"    : "tictim.${mod_id}",
-                "Implementation-Vendor"   : "Tictim",
-                "Implementation-Version"  : "${version}",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConnector"          : "tictim.paraglider.MixinConnector"
-        ])
+    filesMatching('LICENSE') {
+        rename '^(LICENSE.*?)(\\..*)?$', "\$1_${archivesBaseName}\$2"
     }
 }
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+wrapper {
+    gradleVersion = '7.6'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+// Configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
+}
