@@ -30,12 +30,6 @@ repositories {
 
 loom {
     accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accesswidener")
-//    splitEnvironmentSourceSets()
-    mods {
-        paraglider {
-            sourceSet sourceSets.main
-        }
-    }
 }
 
 // All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"

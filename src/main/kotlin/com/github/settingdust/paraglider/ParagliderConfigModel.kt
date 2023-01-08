@@ -14,8 +14,8 @@ import org.jetbrains.annotations.ApiStatus.Internal
 @Config(name = Paraglider.ID, wrapperName = "ParagliderConfig")
 class ParagliderConfigModel {
     @JvmField
-    @SectionHeader("updraft")
-    var durability = 0
+    @SectionHeader("paraglider")
+    var durability = 6000
 
     @JvmField
     var paraglidingSpeed = 0.026F
@@ -32,7 +32,7 @@ class ParagliderConfigModel {
     var staminaEnable = true
 
     @JvmField
-    var maxStamina = 3000
+    var maxStamina = 1000
 
     @JvmField
     var paraglidingStamina = -3

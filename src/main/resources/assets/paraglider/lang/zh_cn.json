@@ -1,6 +1,7 @@
 {
+    "text.config.paraglider.section.paraglider": "滑翔伞",
     "text.config.paraglider.option.durability":"耐久",
-    "text.config.paraglider.option.durability.tooltip":"滑翔伞的耐久值，为 0 时不会损坏",
+    "text.config.paraglider.option.durability.tooltip":"滑翔伞的耐久值，每刻消耗 1 点，为 0 时不会损坏",
     "text.config.paraglider.option.paraglidingSpeed":"滑翔速度",
     "text.config.paraglider.option.paraglidingSpeed.tooltip":"默认为 0.026，与冲刺速度等同",
 
@@ -21,5 +22,10 @@
     "text.config.paraglider.option.groundStamina":"地表精力",
 
     "item.paraglider.paraglider": "滑翔伞",
-    "item.paraglider.deku_leaf_paraglider": "德库叶子"
+    "item.paraglider.deku_leaf_paraglider": "德库叶子",
+
+    "advancement.paraglider.paraglider": "好像飞起来了？",
+    "advancement.paraglider.paraglider.desc": "获得滑翔伞",
+
+    "tooltip.paraglider.paraglider_broken": "已损坏"
 }

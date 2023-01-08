@@ -1,6 +1,9 @@
 {
+	"text.config.paraglider.section.paraglider": "Paraglider",
 	"text.config.paraglider.option.durability":"Durability",
-	"text.config.paraglider.option.durability.tooltip":"Max damage of paraglider. 0 not breakable",
+	"text.config.paraglider.option.durability.tooltip":"Max damage of paraglider. 1 per tick.0 not breakable",
+	"text.config.paraglider.option.paraglidingSpeed":"Paragliding speed",
+	"text.config.paraglider.option.paraglidingSpeed.tooltip":"Default is 0.026 that is spiriting speed",
 
 	"text.config.paraglider.section.updraft": "Updraft",
 	"text.config.paraglider.option.updraftEnable":"Enable updraft",
@@ -19,5 +22,10 @@
 	"text.config.paraglider.option.groundStamina":"Ground stamina",
 
 	"item.paraglider.paraglider": "Paraglider",
-	"item.paraglider.deku_leaf_paraglider": "Deku leaf"
+	"item.paraglider.deku_leaf_paraglider": "Deku leaf",
+
+	"advancement.paraglider.paraglider": "Half a flight",
+	"advancement.paraglider.paraglider.desc": "Obtain Paraglider",
+
+	"tooltip.paraglider.paraglider_broken": "Broken"
 }

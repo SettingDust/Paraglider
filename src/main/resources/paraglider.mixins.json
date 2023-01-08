@@ -5,9 +5,11 @@
     "compatibilityLevel": "JAVA_17",
     "refmap": "paraglider.refmap.json",
     "mixins": [
-        "MixinServerPlayNetworkHandler"
+        "MixinItem",
+        "paragliding.MixinServerPlayNetworkHandler"
     ],
     "client": [
-        "MixinParaglidingPlayerEntityModel"
+        "MixinHeldItemRenderer",
+        "paragliding.MixinPlayerEntityModel"
     ]
 }

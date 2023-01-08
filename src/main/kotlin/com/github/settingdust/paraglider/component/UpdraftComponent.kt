@@ -8,7 +8,6 @@ import net.minecraft.block.CampfireBlock
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.tag.BlockTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.nbt.set
@@ -26,7 +25,7 @@ data class UpdraftComponent(
 ) : AutoSyncedComponent, CommonTickingComponent {
     companion object {
         val UPDRAFT_PREDICATE = { block: BlockState ->
-            block.isInAndMatches(BlockTags.CAMPFIRES) { // TODO TAG
+            block.isInAndMatches(Paraglider.Tags.UPDRAFT) {
                 if ((CampfireBlock.LIT in it)) it[CampfireBlock.LIT]
                 else true
             }
