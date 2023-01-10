@@ -1,4 +1,5 @@
 {
+	"text.config.paraglider.title": "Paraglider",
 	"text.config.paraglider.section.paraglider": "Paraglider",
 	"text.config.paraglider.option.durability":"Durability",
 	"text.config.paraglider.option.durability.tooltip":"Max damage of paraglider. 1 per tick.0 not breakable",

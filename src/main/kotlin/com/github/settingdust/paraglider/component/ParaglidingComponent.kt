@@ -95,7 +95,7 @@ data class ParaglidingComponent(
         val shouldNotParagliding = player.isOnGround ||
             player.hasVehicle() ||
             player.isSwimming ||
-            paraglider.damage >= paraglider.maxDamage ||
+            (paraglider.maxDamage != 0 && paraglider.damage >= paraglider.maxDamage) ||
             player.isTouchingWater ||
             (player.isSprinting && !player.isUsingItem) ||
             player.abilities.flying

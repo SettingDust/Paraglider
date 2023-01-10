@@ -1,4 +1,5 @@
 {
+    "text.config.paraglider.title": "滑翔伞",
     "text.config.paraglider.section.paraglider": "滑翔伞",
     "text.config.paraglider.option.durability":"耐久",
     "text.config.paraglider.option.durability.tooltip":"滑翔伞的耐久值，每刻消耗 1 点，为 0 时不会损坏",
